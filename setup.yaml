@@ -1,0 +1,86 @@
+---
+- become: yes
+  hosts: localhost
+  tasks:
+    - name: Install core packages
+      pacman:
+        name:
+          - zsh
+          - fzf
+          - bat
+          - tmux
+          - lf
+          - firefox
+          - exa
+          - clang
+          - make
+          - cmake
+          - discord
+          - docker
+          - dunst
+          - ffmpeg
+          - ffmpegthumbnailer
+          - flameshot
+          - font-manager
+          - gcc
+          - kitty
+          - npm
+          - go
+          - qtile
+          - neofetch
+          - cowsay
+          - lolcat
+          - obs-studio
+          - python
+          - typescript
+          - vim
+          - wget
+          - git
+          - curl
+          - xdotool
+          - zathura
+          - base-devel
+          - zathura-pdf-mupdf
+          - yt-dlp
+          - imagemagick
+          - gimp
+          - zoxide
+          - mpv
+          - sxiv
+          - xclip
+          - bc
+          - obsidian
+          - rustup
+          - spotify-launcher
+          - alacritty
+    - ansible.builtin.command: "sudo -u sky git clone https://aur.archlinux.org/yay.git /tmp/yay"
+      become: yes
+      become_user: "sky"
+      name: Install yay
+
+    - git:
+          dest: /home/sky/.dotfiles/
+          repo: "git@github.com:skykosiner/.dotfiles"
+      name: "Clone .dotfiles"
+
+    - ansible.builtin.command: "cd /tmp/yay && makepkg -si --noconfirm"
+      become: yes
+      become_user: "sky"
+      name: Build and install yay
+    - debug:
+        var: build_yay_output
+
+    - ansible.builtin.command: "sudo -u sky yay -S --noconfirm {{ aur_packages }}"
+      become: yes
+      become_user: "sky"
+      name: "Install aur packages"
+      vars:
+        aur_packages:
+          - air
+          - 1password
+          - brave-bin
+          - devour
+          - davinci-resolve
+          - spotify-tui
+          - zsh-autosuggestions-git
+          - zsh-syntax-highlighting.git
